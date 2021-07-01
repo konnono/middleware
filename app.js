@@ -11,12 +11,16 @@ app.get('/favicon.ico', (req, res) => {
 
 function timeLog(req, res, next) {
   const reqTime = new Date()
-  console.log(`${moment(reqTime).format('YYYY-MM-DD HH:mm:ss')} | ${req.method} from ${req.originalUrl}`)
+
+  res.on('finish', () => {
+    const resTime = new Date()
+    const timeDiff = resTime - reqTime
+    console.log(`${moment(reqTime).format('YYYY-MM-DD HH:mm:ss')} | ${req.method} from ${req.originalUrl} | total time: ${timeDiff}ms`)
+  })
   next()
 }
 
 app.use(timeLog)
-
 
 app.get('/', (req, res) => {
   res.send('列出全部 Todo')
