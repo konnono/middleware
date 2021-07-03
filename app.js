@@ -1,26 +1,11 @@
 // app.js
 const express = require('express')
-const moment = require('moment')
+const middleware = require('./middleware/timeLog')
+
 const app = express()
 const port = 3000
 
-// 先處理/favicon.ico的相關request再套用印出timestamp的middleware
-app.get('/favicon.ico', (req, res) => {
-  res.sendStatus(204)
-})
-
-function timeLog(req, res, next) {
-  const reqTime = new Date()
-
-  res.on('finish', () => {
-    const resTime = new Date()
-    const timeDiff = resTime - reqTime
-    console.log(`${moment(reqTime).format('YYYY-MM-DD HH:mm:ss')} | ${req.method} from ${req.originalUrl} | total time: ${timeDiff}ms`)
-  })
-  next()
-}
-
-app.use(timeLog)
+app.use(middleware)
 
 app.get('/', (req, res) => {
   res.send('列出全部 Todo')
